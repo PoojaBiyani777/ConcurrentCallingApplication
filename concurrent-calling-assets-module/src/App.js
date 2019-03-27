@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
 import './App.css';
 import DisplayCallDetails from './components/DisplayCallDetails';
+import Header from './components/Header';
+import { BrowserRouter ,Switch} from 'react-router-dom';
+import MainTimeLine from './components/MainTimeLine';
+import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
 
 class App extends Component
 {
   render() 
   {
     return (
-      <div className="App">
-        <h1>Multiple Calling Application</h1>
-        <DisplayCallDetails callDetails/>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Header/>
+          <Switch>
+
+          <Route exact path = "/" component = { DisplayCallDetails } />
+          <Route exact path = '/timeline/:phone_number'  component = { MainTimeLine } />
+        
+          </Switch>
+        </div>
+      </BrowserRouter>
+
     );
   }
 }
