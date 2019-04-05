@@ -15,15 +15,38 @@ export class MainTimeLine extends Component {
   constructor(props) {
     super(props);
   }
+  handleEndCall = () => {
+    console.log("End Call");
+    /*  if (typeof this.props.location.state.func === "function")
+      this.props.location.state.func();*/
+
+    //  let callNumbersList = localStorage.getItem("callNumbersList");
+    let index = Number(localStorage.getItem("index"));
+    //callNumbersList.splice(index, 1);
+    //localStorage.setItem("callNumbersList", callNumbersList);
+    index = index + 1;
+    //  let length = callNumbersList.length;
+    localStorage.setItem("index", index);
+    //  localStorage.setItem("length", length);
+    this.props.history.push("/");
+  };
   render() {
+    console.log("props1" + this.props);
     const { classes } = this.props;
-    const phoneNumber = this.props.match.params.phone_number;
+    /*if (typeof this.props.location.state.func === "function")
+      this.props.location.state.func();*/
+    const phoneNumber = "";
+
+    // const phoneNumber = this.props.location.phoneNumber;
     return (
       <div
         className={classes.mainTimeLineBackgroud}
         style={{ backgroundColor: "red" }}
       >
-        <CallingBar phoneNumber={phoneNumber} />
+        <CallingBar
+          handleEndCall={this.handleEndCall}
+          phoneNumber={phoneNumber}
+        />
         <div>
           <Notes phoneNumber={phoneNumber} />
         </div>

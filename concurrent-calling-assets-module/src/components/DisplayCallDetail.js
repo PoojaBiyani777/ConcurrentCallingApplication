@@ -1,26 +1,23 @@
-import React, { Component } from 'react'
-import './../css/DisplayCallDetail.css';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
-import { Link, NavLink } from 'react-router-dom';
-import "./../css/CallingBar.css"
+import React, { Component } from "react";
+import "./../css/DisplayCallDetail.css";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import Checkbox from "@material-ui/core/Checkbox";
+import { Link, NavLink } from "react-router-dom";
+import "./../css/CallingBar.css";
 
 let SIPml = window.SIPml;
 let phoneNumber1 = "+919100679394";
-export class DisplayCallDetail extends Component
- {
-   state = {
-    isChecked: false,
-   }
-
-  callPhoneNumber = (phoneNumber) =>
-  {
-    console.log("Call the Phone Number : ",phoneNumber);
+export class DisplayCallDetail extends Component {
+  state = {
+    isChecked: false
   };
 
-  callEventsListener = e => 
-  {
+  callPhoneNumber = phoneNumber => {
+    console.log("Call the Phone Number : ", phoneNumber);
+  };
+
+  callEventsListener = e => {
     console.info(
       ">>>>> Call session event = " +
         e.type +
@@ -42,8 +39,7 @@ export class DisplayCallDetail extends Component
     }
   };
 
-  makeCall = () => 
-  {
+  makeCall = () => {
     console.log("in make call function");
     this.callSession = this.sipStack.newSession("call-audio", {
       audio_remote: document.getElementById("audio-remote"),
@@ -52,18 +48,15 @@ export class DisplayCallDetail extends Component
     this.callSession.call(phoneNumber1);
   };
 
-  sessionEventsListener = e =>
-  {
+  sessionEventsListener = e => {
     console.info(">>>session event = " + e.type);
-    if (e.type === "connected" && e.session === this.registerSession) 
-    {
+    if (e.type === "connected" && e.session === this.registerSession) {
       console.log("session connected. Making a call");
       this.makeCall();
     }
   };
 
-  login = () =>
-  {
+  login = () => {
     this.registerSession = this.sipStack.newSession("register", {
       events_listener: { events: "*", listener: this.sessionEventsListener } // optional: '*' means all events
     });
@@ -71,8 +64,7 @@ export class DisplayCallDetail extends Component
     this.registerSession.register();
   };
 
-  sipStackEventsListener = e =>
-  {
+  sipStackEventsListener = e => {
     console.log(">>>sip stack events listener Event: " + e.type);
     if (e.type === "started") {
       console.log("sip stack started... next step is calling login()");
@@ -80,8 +72,7 @@ export class DisplayCallDetail extends Component
     }
   };
 
-  createSipStack = () =>
-  {
+  createSipStack = () => {
     console.log("in create sip stack method");
     this.sipStack = new SIPml.Stack({
       realm: "172.16.17.205", // mandatory: domain name
@@ -101,7 +92,8 @@ export class DisplayCallDetail extends Component
       sip_headers: [
         {
           name: "numbers",
-          value: "PJSIP/+919177245806@twilio0&PJSIP/+918639952988@twilio1&PJSIP/+919100679394@twilio2,20"
+          value:
+            "PJSIP/+919177245806@twilio0&PJSIP/+918639952988@twilio1&PJSIP/+919100679394@twilio2,20"
         }
         //{ name: "UID", value: generateUID(), session: true }
       ]
@@ -110,55 +102,53 @@ export class DisplayCallDetail extends Component
   readyCallback = e => {
     this.createSipStack();
   };
-  errorCallback = e => 
-  {
+  errorCallback = e => {
     console.error("Failed to initialize the engine: " + e.message);
   };
 
-  makeSIPCall = () => 
-  {
+  makeSIPCall = () => {
     SIPml.init(this.readyCallback, this.errorCallback);
     this.sipStack.start();
   };
 
-  call = (phoneNumber) =>
-  {
-      console.log(phoneNumber);
-      this.makeSIPCall();
+  call = phoneNumber => {
+    console.log(phoneNumber);
+    this.makeSIPCall();
   };
-  checkboxChanged = (callNumber) =>
-  {
-  //  console.log("Checked : ", this.state.isChecked, "Call Number : ",callNumber);
-    let isCheckedBox =!this.state.isChecked;
-    if(isCheckedBox)
-    {
+  checkboxChanged = callNumber => {
+    //  console.log("Checked : ", this.state.isChecked, "Call Number : ",callNumber);
+    let isCheckedBox = !this.state.isChecked;
+    if (isCheckedBox) {
       this.props.checkboxChangedToTrue(callNumber);
-    }
-    else
-    {
+    } else {
       this.props.checkboxChangedToFalse(callNumber);
     }
     this.setState({
-      isChecked: isCheckedBox,
-    })
+      isChecked: isCheckedBox
+    });
     //console.log("Checked : ", this.state.isChecked, "Call Number : ",this.state.callNumbers);
   };
-  
-  render() 
-  {
+
+  render() {
     const callDetail = this.props.callDetail;
     return (
-        <TableRow>
-            <TableCell> <Checkbox onClick={ () => this.checkboxChanged(callDetail.phoneNumber) } /> { callDetail.contactName } </TableCell>
-            <TableCell onClick = { () => this.call(callDetail.phoneNumber) }>            
-              <Link to = {'/timeline/'+ callDetail.phoneNumber} className="back">
-              { callDetail.phoneNumber }
-              </Link>
-            </TableCell>
-            <TableCell> { callDetail.status } </TableCell>
-            <TableCell> { callDetail.dueDate } </TableCell>
-        </TableRow>
-    )
+      <TableRow>
+        <TableCell>
+          {" "}
+          <Checkbox
+            onClick={() => this.checkboxChanged(callDetail.phoneNumber)}
+          />{" "}
+          {callDetail.contactName}{" "}
+        </TableCell>
+        <TableCell onClick={() => this.call(callDetail.phoneNumber)}>
+          <Link to={"/timeline/" + callDetail.phoneNumber} className="back">
+            {callDetail.phoneNumber}
+          </Link>
+        </TableCell>
+        <TableCell> {callDetail.status} </TableCell>
+        <TableCell> {callDetail.dueDate} </TableCell>
+      </TableRow>
+    );
   }
 }
 

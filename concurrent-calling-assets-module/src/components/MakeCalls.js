@@ -4,7 +4,6 @@ let SIPml = window.SIPml;
 let phoneNumber1 = "+919177245806";
 let length = "";
 let value = "";
-let sipStack = "";
 let callSession = "";
 let index = -1;
 let type = "started";
@@ -16,14 +15,20 @@ export class MakeCalls extends Component {
     console.log("Call the Phone Number : ", phoneNumber);
   };
   endCall = () => {
-    /*  if (this.callSession) {
+    if (this.callSession) {
       this.callSession.hangup({
         events_listener: { events: "*", listener: this.sessionEventsListener }
       });
-    }*/
-    let status1 = status;
-    status = "";
-    this.props.handleCall(status1);
+    }
+    //let callNumbersList = localStorage.getItem("callNumbersList");
+    /*  let index = localStorage.getItem("index");
+    //callNumbersList.splice(index, 1);
+    //localStorage.setItem("callNumbersList", callNumbersList);
+    index = index + 1;
+    //let length = callNumbersList.length;
+    localStorage.setItem("index", index);*/
+    //localStorage.setItem("length", length);
+    //this.props.history.push("/");
   };
   callEventsListener = e => {
     console.info(
@@ -39,7 +44,7 @@ export class MakeCalls extends Component {
       console.log("the person has picked up");
       status = "the person has picked up";
       callConnected = true;
-      //  this.props.callConnected();
+      this.props.callConnected();
       //      this.startTimer();
       //EventBus.$emit("startTranscriptionEvent");
       //if (e.type === "terminated") this.sipStack.stop();
@@ -166,15 +171,19 @@ export class MakeCalls extends Component {
     //  callNumbersList = callNumbersList;
     console.log("in call Function");
     //    console.log(this.state.callNumbersList);
-    phoneNumber1 = this.props.value;
-    if (this.props.index == 0) {
-      SIPml.init(this.readyCallback, this.errorCallback);
-      this.sipStack.start();
-    } else {
+
+    phoneNumber1 = this.props.phoneNumber1;
+    console.log("phoneNumber1" + phoneNumber1);
+    SIPml.init(this.readyCallback, this.errorCallback);
+    if (this.sipStack == null) {
+      this.createSipStack();
+    }
+    this.sipStack.start();
+    /*  } else {
       console.log("entered else");
       //  this.createSipStack();
       this.makeCall();
-    }
+    }*/
   };
 
   call = () => {
@@ -185,7 +194,8 @@ export class MakeCalls extends Component {
 
     }*/
     console.log("called MakeCalls in componentDidMount");
-    value = "PJSIP/+91" + this.props.value + "@twilio0";
+
+    //  value = "PJSIP/+91" +callNumbersList +"@twilio0";
     this.makeSIPCall();
 
     console.log("calledout");
@@ -198,6 +208,9 @@ export class MakeCalls extends Component {
       });
     }
   };*/
+  componentWillMount() {
+    this.forceUpdate();
+  }
   render() {
     //  console.log("props"+this.props.callNumbersList);
     //value=this.props.value;

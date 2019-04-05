@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import './App.css';
-import DisplayCallDetails from './components/DisplayCallDetails';
-import Header from './components/Header';
-import { BrowserRouter ,Switch} from 'react-router-dom';
-import MainTimeLine from './components/MainTimeLine';
-import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
+import React, { Component } from "react";
+import "./App.css";
+import DisplayCallDetails from "./components/DisplayCallDetails";
+import Header from "./components/Header";
+import { BrowserRouter, Switch } from "react-router-dom";
+import MainTimeLine from "./components/MainTimeLine";
+import { Router, Route, Link, browserHistory, IndexRoute } from "react-router";
 
-class App extends Component
-{
-  render() 
-  {
+class App extends Component {
+  render() {
     return (
       <BrowserRouter>
         <div className="App">
-          <Header/>
+          <Header />
           <Switch>
-
-          <Route exact path = "/" component = { DisplayCallDetails } />
-          <Route exact path = '/timeline/:phone_number'  component = { MainTimeLine } />
-        
+            <Route exact path="/" component={DisplayCallDetails} />
+            <Route
+              exact
+              path="/timeline/:phone_number"
+              component={MainTimeLine}
+            />
           </Switch>
         </div>
       </BrowserRouter>
-
     );
   }
 }
