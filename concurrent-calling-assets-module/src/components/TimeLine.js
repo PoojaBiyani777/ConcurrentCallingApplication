@@ -16,13 +16,15 @@ const styles = theme =>
     }
 })
 
-export class TimeLine extends Component {
+export class TimeLine extends Component 
+{
   constructor(props)
   {
     super(props);
-  };
+  }
     
-  render() {
+  render() 
+  {
     const { classes } = this.props;
     return (
       <div className = { classes.timeLineBackground }>

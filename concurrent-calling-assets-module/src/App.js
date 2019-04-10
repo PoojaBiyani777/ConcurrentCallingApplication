@@ -15,10 +15,8 @@ class App extends Component
         <div className="App">
           <Header/>
           <Switch>
-
-          <Route exact path = "/" component = { DisplayCallDetails } />
-          <Route exact path = '/timeline/:phone_number'  component = { MainTimeLine } />
-        
+            <Route exact path = "/" component = { DisplayCallDetails } />
+            <Route exact path = '/timeline/:id/:phone_number'  component = { MainTimeLine } />
           </Switch>
         </div>
       </BrowserRouter>

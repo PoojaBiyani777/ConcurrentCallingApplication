@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Toolbar } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import axios from 'axios';
+
+let notes = "";
+let connectedId = "";
+let connectedPhoneNumber = "";
 
 const styles = theme =>
 ({
@@ -68,17 +71,57 @@ const styles = theme =>
 
 })
 
-export class Notes extends Component {
+export class Notes extends Component 
+{
+  state = {
+      notes: ""
+  }
+
   constructor(props)
   {
     super(props);
-  };
+  }
+
+  onChangeHandler = (event) =>
+  {
+    console.log(event.target.value);
+    this.setState({
+        notes: event.target.value
+    })
+  }
+
+  onSubmitHandler = (event) =>
+  {
+    event.preventDefault();
+    console.log("State notes : "+this.state.notes);
+    notes = this.state.notes;
+    console.log("Notes : "+notes);
+    const id = connectedId;
+    const phoneNumber = connectedPhoneNumber;
+    const data = {
+        notes
+    }
+    console.log("Notes submit handler!");
+    this.props.saveStatusAndNotes(notes);
+/*
+    axios.put('http://localhost:8080/call-details/'+id,data)
+      .then(response => {
+          console.log(response);
+      })
+      .catch(error =>{
+          console.log(error);
+      })
+  */  
+  }
 
   render() 
   {
     const { classes } = this.props;
+    connectedPhoneNumber = this.props.phoneNumber;
+    connectedId = this.props.id;
+
     return (
-        <div>
+      <div> 
         <div className = { classes.notesBackground }>
             <div className = { classes.newNote }>
                 <img src = { require('./../static/icn_new_note/icn_new_note@2x.png') } />
@@ -98,19 +141,22 @@ export class Notes extends Component {
             </div>
             </div>
             <div className = { classes.textField }>
+            <form onSubmit = { this.onSubmitHandler }>
                 <TextField
-                 rows = { 7 } 
-                 fullWidth = "true" 
-                 multiline = "true" 
-                 margin = "none" 
-                 placeholder = "Take Notes On this Call....."
-                 underline = "false"
-                 >
-                 </TextField>
-            </div>
-           
-        
+                    rows = { 7 } 
+                    id = "notes"
+                    fullWidth = "true" 
+                    multiline = "true" 
+                    margin = "none" 
+                    placeholder = "Take Notes On this Call....."
+                    underline = "false"
+                    onChange = { this.onChangeHandler }
+                >
+                </TextField>
+                <input type = "submit" id = "submit"/>
+                </form>
         </div>
+      </div>
     )
   }
 }

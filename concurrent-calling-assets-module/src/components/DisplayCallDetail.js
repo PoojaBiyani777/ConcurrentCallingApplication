@@ -4,20 +4,22 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Link, NavLink } from 'react-router-dom';
-import "./../css/CallingBar.css"
+import "./../css/CallingBar.css";
+import axios from  'axios';
 
 let SIPml = window.SIPml;
 let phoneNumber1 = "+919100679394";
 export class DisplayCallDetail extends Component
- {
-   state = {
+{
+  state = {
     isChecked: false,
-   }
+    id: '',
+  }
 
   callPhoneNumber = (phoneNumber) =>
   {
     console.log("Call the Phone Number : ",phoneNumber);
-  };
+  }
 
   callEventsListener = e => 
   {
@@ -29,18 +31,23 @@ export class DisplayCallDetail extends Component
         " Description: " +
         e.description
     );
-    if (e.type === "connected") {
+    if (e.type === "connected") 
+    {
       console.log("the person has picked up");
       this.callConnected = true;
-      //      this.startTimer();
+      //this.startTimer();
       //EventBus.$emit("startTranscriptionEvent");
-    } else if (e.type === "terminated") {
+    } 
+    else if (e.type === "terminated") 
+    {
       //this.endCall();
-    } else if (e.getSipResponseCode() === 480) {
+    } 
+    else if (e.getSipResponseCode() === 480) 
+    {
       console.log("call-missed");
       //this.endCall();
     }
-  };
+  }
 
   makeCall = () => 
   {
@@ -50,7 +57,7 @@ export class DisplayCallDetail extends Component
       events_listener: { events: "*", listener: this.callEventsListener } // optional: '*' means all events
     });
     this.callSession.call(phoneNumber1);
-  };
+  }
 
   sessionEventsListener = e =>
   {
@@ -60,7 +67,7 @@ export class DisplayCallDetail extends Component
       console.log("session connected. Making a call");
       this.makeCall();
     }
-  };
+  }
 
   login = () =>
   {
@@ -69,7 +76,7 @@ export class DisplayCallDetail extends Component
     });
     console.log("in login funcion... calling registerSession.register()");
     this.registerSession.register();
-  };
+  }
 
   sipStackEventsListener = e =>
   {
@@ -78,7 +85,7 @@ export class DisplayCallDetail extends Component
       console.log("sip stack started... next step is calling login()");
       this.login();
     }
-  };
+  }
 
   createSipStack = () =>
   {
@@ -103,32 +110,34 @@ export class DisplayCallDetail extends Component
           name: "numbers",
           value: "PJSIP/+919177245806@twilio0&PJSIP/+918639952988@twilio1&PJSIP/+919100679394@twilio2,20"
         }
-        //{ name: "UID", value: generateUID(), session: true }
       ]
     });
-  };
-  readyCallback = e => {
+  }
+
+  readyCallback = e => 
+  {
     this.createSipStack();
-  };
+  }
+
   errorCallback = e => 
   {
     console.error("Failed to initialize the engine: " + e.message);
-  };
+  }
 
   makeSIPCall = () => 
   {
     SIPml.init(this.readyCallback, this.errorCallback);
     this.sipStack.start();
-  };
+  }
 
   call = (phoneNumber) =>
   {
       console.log(phoneNumber);
       this.makeSIPCall();
-  };
+  }
+
   checkboxChanged = (callNumber) =>
   {
-  //  console.log("Checked : ", this.state.isChecked, "Call Number : ",callNumber);
     let isCheckedBox =!this.state.isChecked;
     if(isCheckedBox)
     {
@@ -141,23 +150,44 @@ export class DisplayCallDetail extends Component
     this.setState({
       isChecked: isCheckedBox,
     })
-    //console.log("Checked : ", this.state.isChecked, "Call Number : ",this.state.callNumbers);
-  };
+  }
+
+  deleteCallDetail = (id) =>
+  {
+    this.setState({
+      id: id
+    })
+    console.log("Id to be deleted is : ",id);
+    //handleDelete();
+  }
+
+  handleDelete = event =>
+  {
+    event.preventDefault();
+    axios.delete('http://localhost:8080/call-details/${this.state.id}')
+      .then(response => {
+        console.log("delete from DisplayCallDetail : ",response);
+      })
+  }
+
   
   render() 
   {
     const callDetail = this.props.callDetail;
     return (
-        <TableRow>
-            <TableCell> <Checkbox onClick={ () => this.checkboxChanged(callDetail.phoneNumber) } /> { callDetail.contactName } </TableCell>
-            <TableCell onClick = { () => this.call(callDetail.phoneNumber) }>            
-              <Link to = {'/timeline/'+ callDetail.phoneNumber} className="back">
-              { callDetail.phoneNumber }
-              </Link>
-            </TableCell>
-            <TableCell> { callDetail.status } </TableCell>
-            <TableCell> { callDetail.dueDate } </TableCell>
-        </TableRow>
+      <TableRow>
+        <TableCell> 
+          <Checkbox onClick = { () => this.checkboxChanged(callDetail.phoneNumber) } /> 
+          { callDetail.contactName } 
+        </TableCell>
+        <TableCell>            
+          <Link to = {'/timeline/'+ callDetail.id + '/' + callDetail.phoneNumber } className="back">
+            { callDetail.phoneNumber }
+          </Link>
+        </TableCell>
+        <TableCell> { callDetail.status } </TableCell>
+        <TableCell> { callDetail.dueDate } </TableCell>
+      </TableRow>
     )
   }
 }

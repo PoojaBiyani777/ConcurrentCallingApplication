@@ -1,20 +1,20 @@
 package com.zemoso.concurrentcallingservermodule.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "CallDetails")
+@Table(name = "call_details")
 public class CallDetailsModel
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    User user;
 
     @Column(nullable = false)
     private int checked;
@@ -25,24 +25,66 @@ public class CallDetailsModel
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
+    @Column
     private String status;
 
     @Column(nullable = false)
     private String dueDate;
 
+    @Column
+    private String duration;
+
+    @Column
+    private String notes;
+
+    @Column
+    private LocalDateTime createdDate;
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public CallDetailsModel()
     {
     }
 
-    public CallDetailsModel(Long id, int checked, String contactName, String phoneNumber, String status, String dueDate)
+    public CallDetailsModel(Long id, User user, int checked, String contactName, String phoneNumber, String status, String dueDate)
     {
         this.id = id;
+        this.user = user;
         this.checked = checked;
         this.contactName = contactName;
         this.phoneNumber = phoneNumber;
         this.status = status;
         this.dueDate = dueDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getId()

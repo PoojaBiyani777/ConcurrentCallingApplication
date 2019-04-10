@@ -5,6 +5,7 @@ import com.zemoso.concurrentcallingservermodule.service.CallDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,10 +32,21 @@ public class CallDetailsController
         callDetailsService.addCallDetails(callDetails);
     }
 
-    @RequestMapping(method=RequestMethod.PUT, value="/call-details/{id}")
-    public void updateCallDetails(@RequestBody CallDetailsModel callDetails, @PathVariable Long id)
+    /*
+    @RequestMapping(method=RequestMethod.PUT, value="/call-details/{id}/{phoneNumber}")
+    public void updateStatus(@RequestBody Map<String, Object> map, @PathVariable Long id, @PathVariable String phoneNumber)
     {
-        callDetailsService.updateCallDetailsById(id, callDetails);
+        String status = map.get("status").toString();
+        callDetailsService.updateStatus(id, status);
+    }
+*/
+    @RequestMapping(method=RequestMethod.PUT, value="/call-details/{id}")
+    public void updateStatusAndNotes(@RequestBody Map<String, Object> map, @PathVariable Long id)
+    {
+        String status = map.get("status").toString();
+        String notes = map.get("notes").toString();
+
+        callDetailsService.updateStatusAndNotes(id, status, notes);
     }
 
     @RequestMapping(method=RequestMethod.DELETE, value="/call-details/{id}")

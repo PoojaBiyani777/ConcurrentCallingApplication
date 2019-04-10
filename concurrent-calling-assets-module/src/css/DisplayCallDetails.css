@@ -1,6 +1,17 @@
 .display-table {
+    display: inline;
+    float: left;
     border: 1px solid gray;
-    width: 70%;
-    margin-left: 300px;
+    width: 60%;
     margin-top: 30px;
+    margin-left: 60px;
+}
+
+.tasks-list {
+    display: inline;
+    float: left;
+    width: 250px;
+    height: inherit;
+    margin-top: 29px;
+    background-color: #D0D0D0	;
 }
