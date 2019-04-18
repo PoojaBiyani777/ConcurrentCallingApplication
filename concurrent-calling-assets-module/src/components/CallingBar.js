@@ -7,6 +7,7 @@ import axios from 'axios';
 let connectedPhoneNumber = "";
 let connectedId = "";
 let connectedStatus = "";
+let nowTime = null;
 
 const styles = theme => 
 ({
@@ -61,6 +62,9 @@ export class CallingBar extends Component {
   constructor(props) 
   {
     super(props);
+    this.state = {
+      curTime : null
+    }
   }
 
   updateStatus = () =>
@@ -109,6 +113,18 @@ export class CallingBar extends Component {
     .then(res => {
     console.log(res);
     })
+
+    console.log("In Display Time!");
+    setInterval( () => {
+      this.setState({
+        curTime : new Date().toLocaleString()
+      })
+    },1000)
+    setInterval( () => {
+      nowTime = new Date().toLocaleString()
+    },1000)
+    console.log("Current Time " + this.state.curTime);
+    console.log("Now Time : "+nowTime);
     
    const id = connectedId
     const phoneNumber =  connectedPhoneNumber
@@ -131,6 +147,22 @@ export class CallingBar extends Component {
     */
   }
 
+  displayTime = () =>
+  {
+    console.log("hello")
+    setInterval( () => {
+      this.setState({
+        curTime : new Date().toLocaleString()
+      })
+    },1000)
+    setInterval( () => {
+      nowTime = new Date().toLocaleString()
+    },1000)
+    console.log("Current Time " + this.state.curTime);
+    console.log("Now Time : "+nowTime);
+    
+  }
+  
   render() 
   {
     const {classes} = this.props;
@@ -142,7 +174,7 @@ export class CallingBar extends Component {
         <Toolbar className = { classes.toolBar }>
             <div className = { classes.phoneNumber }>
               <div>Connected to: { connectedPhoneNumber }</div>
-              <div className = { classes.time }> 0:07 </div>
+              <div className = { classes.time }> {new Date().toLocaleTimeString()} </div>
             </div>  
             <div className = { classes.hangUpIcon }>
               <img 

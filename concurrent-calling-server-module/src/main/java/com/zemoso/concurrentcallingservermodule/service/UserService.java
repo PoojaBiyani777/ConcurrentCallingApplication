@@ -5,6 +5,7 @@ import com.zemoso.concurrentcallingservermodule.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,4 +27,36 @@ public class UserService
     {
         return userRepository.findById(id);
     }
+
+    public void addUser(User user)
+    {
+        userRepository.save(user);
+    }
+
+    public void updateUserDetails(Long id, String userName1, String firstName1, String lastName1, String password1)
+    {
+        Optional<User> userOptional = userRepository.findById(id);
+        User user = userOptional.get();
+        if(userOptional.isPresent())
+        {
+            String userName = user.getUserName();
+            String firstName = user.getFirstName();
+            String lastName = user.getLastName();
+            String password = user.getPassword();
+            Blob displayPicture = user.getDisplayPicture();
+
+            user.setUserName(userName1);
+            user.setFirstName(firstName1);
+            user.setLastName(lastName1);
+            user.setPassword(password1);
+          //  user.setDisplayPicture(displayPicture1);
+
+            userRepository.save(user);
+        }
+        else
+        {
+
+        }
+    }
+
 }

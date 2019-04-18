@@ -136,16 +136,16 @@ export class DisplayCallDetail extends Component
       this.makeSIPCall();
   }
 
-  checkboxChanged = (callNumber) =>
+  checkboxChanged = (callNumber, callId) =>
   {
     let isCheckedBox =!this.state.isChecked;
     if(isCheckedBox)
     {
-      this.props.checkboxChangedToTrue(callNumber);
+      this.props.checkboxChangedToTrue(callNumber, callId);
     }
     else
     {
-      this.props.checkboxChangedToFalse(callNumber);
+      this.props.checkboxChangedToFalse(callNumber, callId);
     }
     this.setState({
       isChecked: isCheckedBox,
@@ -177,7 +177,7 @@ export class DisplayCallDetail extends Component
     return (
       <TableRow>
         <TableCell> 
-          <Checkbox onClick = { () => this.checkboxChanged(callDetail.phoneNumber) } /> 
+          <Checkbox onClick = { () => this.checkboxChanged(callDetail.phoneNumber, callDetail.id) } /> 
           { callDetail.contactName } 
         </TableCell>
         <TableCell>            

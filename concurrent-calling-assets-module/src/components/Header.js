@@ -9,6 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Axios from 'axios';
 let userName = "";
 let displayPicture = "";
+let userId = "";
 const styles = theme =>
 ({
   profileName:
@@ -35,7 +36,8 @@ export class Header extends Component
 
   componentDidMount = () =>
   {
-    axios.get('http://localhost:8080/users/4')
+    console.log("UserId " + userId);
+    axios.get('/users/4')
     .then(res => {
       console.log("User ID details : ",res);
       userName = res.data.userName;

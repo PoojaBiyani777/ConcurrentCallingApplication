@@ -17,7 +17,7 @@ const styles = theme =>
         marginLeft: "30px",
         paddingBottom: "5px",
         paddingTop: "10px",
-        backgroundColor: 'white',
+        backgroundColor: "white",
         width: "70%",
         height: "100%",
         float: "right",
@@ -34,7 +34,7 @@ const styles = theme =>
         height: "100%",
         float: "left",
         border: "2px solid gray",
-
+        backgroundColor: "white"
 
     },
 
@@ -114,6 +114,12 @@ export class Notes extends Component
   */  
   }
 
+  handleEndCall = () =>
+  {
+    console.log(" In Notes Submit 777Handler! ");
+    this.props.handleEndCall()
+  }
+
   render() 
   {
     const { classes } = this.props;
@@ -153,9 +159,11 @@ export class Notes extends Component
                     onChange = { this.onChangeHandler }
                 >
                 </TextField>
-                <input type = "submit" id = "submit"/>
-                </form>
-        </div>
+                <input type = "submit" id = "submit" name = "Save" value = "Save"/>
+                <button type = "submit" id = "submit" name = "Submit" value = "Submit" onClick = { this.handleEndCall }>Submit</button>
+            </form>
+            </div>
+
       </div>
     )
   }

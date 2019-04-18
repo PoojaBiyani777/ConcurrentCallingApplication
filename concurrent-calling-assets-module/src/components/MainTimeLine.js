@@ -4,9 +4,13 @@ import Notes from './Notes';
 import TimeLine from './TimeLine';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import Popup from "reactjs-popup";
 
 let id = "";
 let notesChanged = "";
+let phoneNumber = "";
+let success = false;
+let notesSave = "";
 
   const styles = theme =>
   ({
@@ -48,17 +52,24 @@ export class MainTimeLine extends Component
     const statusChanged = "Call Accepted";
     console.log("Data details :- notes : "+notesChanged+" status : "+statusChanged);
     const data = {
-      "status": statusChanged,
       "notes": notesChanged
     }
-    
-    axios.put('http://localhost:8080/call-details/'+id,data)
-      .then(response => {
-        console.log(response);
+   
+    axios.put('/call-details/notes/'+id, data)
+      .then( (response) => {
+        console.log("response :"+response.status);
+        if(response.status === 200)
+        {
+          console.log("Doneeeee updating Notes!");
+          success = true;
+          console.log(success);
+        }
       })
       .catch(error =>{
         console.log(error);
       })
+
+      
     
   }
 
@@ -71,24 +82,25 @@ export class MainTimeLine extends Component
       notesChanged,
       statusChanged
     }
-    /*
-    console.log("data before axios : "+data);
-    axios.put('http://localhost:8080/call-details/'+id,data)
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error =>{
-        console.log(error);
-      })
-    */
   }
 
   render() 
   {
     const { classes } = this.props;
-    const  phoneNumber = this.props.match.params.phone_number;
+    phoneNumber = this.props.match.params.phone_number;
     id = this.props.match.params.id;
     notesChanged = this.props.notes;
+    if(success === true)
+    {
+      notesSave = (
+      <Popup >
+            <div>
+              Notes Saved Successfully!
+            </div>
+      </Popup>
+      );
+    }
+  
     return (
       <div className = { classes.mainTimeLineBackgroud }>
         <CallingBar 
@@ -101,7 +113,9 @@ export class MainTimeLine extends Component
             phoneNumber = { phoneNumber } 
             id = { id }
             saveStatusAndNotes = { this.saveStatusAndNotes }
+            handleEndCall = { this.handleEndCall }  
           />
+
         </div>
         <div>
           <TimeLine 
@@ -109,6 +123,7 @@ export class MainTimeLine extends Component
             id = { id }
           />
         </div>
+        { notesSave }
       </div>
     )
   }

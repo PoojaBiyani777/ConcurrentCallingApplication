@@ -1,17 +1,27 @@
 import React, { Component } from 'react'
+import axios from 'axios';
 
 const SIPml = window.SIPml;
 let phoneNumber1 = "+919177245806";
+let callId1 = "";
 let value = "";
 let status = "";
 let status2 = "";
 let callConnected = false;
+let connectedTime = "";
+let terminatedTime = "";
+let duration = "";
 
 export class MakeCalls extends Component 
 {
-  state = {
-    value : ""
+
+constructor(props)
+{
+  super(props);
+  this.state = {
+
   }
+};
 
   callPhoneNumber = (phoneNumber) =>
   {
@@ -22,11 +32,29 @@ export class MakeCalls extends Component
   {
     let status1 = status;
     status = "";
-    this.props.callConnected(status1);
+  }
+
+  updateStatus = (status) =>
+  {
+    console.log("In Update Status Method: "+ status);
+    callId1 = this.props.callId1;
+    let data = {
+      "status": status
+    }
+    axios.put('/call-details/status/'+callId1,data)
+      .then(response => {
+        console.log(response);
+        return Promise.resolve(response);
+      })
+      .catch(error => {
+        console.log(error)
+      })
+      let hello = "abcdefg";      
   }
     
-  callEventsListener = e => 
+  callEventsListener = (e) => 
   {
+    console.log("777getSipResponseCode : " + e.getSipResponseCode());
     console.info(
     ">>>>> Call session event = " +
     e.type +
@@ -35,38 +63,100 @@ export class MakeCalls extends Component
     " Description: " +
     e.description
     );
+    if(e.type === "connecting")
+    {
+      console.log("Connecting to the customer!");
+      status = "Connecting";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.callConnected = false;
+      // this.updateStatus(status);
+    }
+
     if (e.type === "connected") 
     {
       console.log("the person has picked up");
-      status = "the person has picked up status!";
+      status = "Connected";
+      connectedTime = new Date().toLocaleString();
+      console.log("Connected Time : "+connectedTime);
+
+      // this.updateStatus(status);
       this.callConnected = true;
       callConnected = true;
+      this.props.callConnected();
+      this.props.onStatusChange(this.props.phoneNumber1,status);
       //      this.startTimer();
       //EventBus.$emit("startTranscriptionEvent");
     }
+    else if(e.getSipResponseCode() === 180)
+    {
+      status = "Ringing";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    else if(e.getSipResponseCode() === 181)
+    {
+      status = "Call Is Being Forwarded";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    else if(e.getSipResponseCode() === 202)
+    {
+      status = "Call Accepted";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    if(e.getSipResponseCode() === 486)
+    {
+      status = "Calle Is Busy";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    if(e.getSipResponseCode() === 487)
+    {
+      status = "Request Terminated";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    else if(e.getSipResponseCode() === 600)
+    {
+      status = "Busy Everywhere";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    else if(e.getSipResponseCode() === 603)
+    {
+      status = "Busy Everywhere";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    
     else if (e.type === "terminated") 
     {
-      //this.endCall();
-      if(status == "")
-      {
-        status = "Rejected Status!";
-      }
-      status2 = "terminated";
-      this.endCall();
+        status = "Call Terminated";
+        status2 = "Call Terminated";
+        terminatedTime = new Date().toLocaleString();
+        console.log("Terminated Time : "+terminatedTime);
+        this.updateStatus(status);
+        this.endCall();
+      console.log("terminated123 "+status);
     }
+   
     else if (e.getSipResponseCode() === 480) 
     {
       console.log("call-missed");
       callConnected = false;
 
       //this.endCall();
-      if(status == "")
-      {
-        status = "Call-missed Sattus!";
-      }
-      status2 = "terminated";
+      status = "Call Missed";
+      status2 = "Call Terminated";
+    //  console.log("getSipResponseCode : "+e.getSipResponseCode());
+    //  console.log("getSipResponseCode : "+status);
+      this.updateStatus(status);
       this.endCall();
     }
+
+    if(connectedTime !== "" && terminatedTime !== "")
+    {
+        duration = terminatedTime - connectedTime;
+        console.log("Duration : "+duration);
+    }
+
+    console.log("Status1234567 : "+status);
+    console.log("7779getSipResponseCode : "+e.getSipResponseCode());
+
   }
     
   makeCall = () => 
@@ -87,6 +177,22 @@ export class MakeCalls extends Component
       console.log("session connected. Making a call");
       this.makeCall();
     }
+    console.info(">>>session eeevent = " + e.type);
+    if(e.type === "terminated" && e.session === this.registerSession)
+    {
+      console.log("session terminatedddd");
+    }
+    if(e.getSipResponseCode() === 486)
+    {
+      status = "Calle Is Busy";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+    if(e.getSipResponseCode() === 487)
+    {
+      status = "Request Terminated";
+      this.props.onStatusChange(this.props.phoneNumber1,status);
+    }
+
   }
     
   login = () =>
@@ -118,6 +224,7 @@ export class MakeCalls extends Component
     impu: "sip:sipML5@172.16.17.205", // mandatory: valid SIP Uri (IMS Public Identity)
     password: "test123", // optional
     display_name: "legend", // optional
+    ice_server: '[]',
     websocket_proxy_url: "wss://172.16.17.205:8089/ws", // optional
     //outbound_proxy_url: 'udp://example.org:5060', // optional
     //enable_rtcweb_breaker: false, // optional
@@ -152,7 +259,9 @@ export class MakeCalls extends Component
   {
     console.log("In MAkeSIPCall Function");
     phoneNumber1 = "+91"+this.props.phoneNumber1;
+    callId1 = this.props.callId1;
     console.log("PhoneNumber1 : "+phoneNumber1);
+    console.log("CallId1 : "+callId1);
     SIPml.init(this.readyCallback, this.errorCallback);
     if(this.sipStack == null)
     {
@@ -192,6 +301,7 @@ export class MakeCalls extends Component
     console.log("Index : "+this.props.index+" Value : "+this.props.value);
     return (
       <div>
+      { () => this.props.display("hello123") }
         { this.call() }
       </div>
     )

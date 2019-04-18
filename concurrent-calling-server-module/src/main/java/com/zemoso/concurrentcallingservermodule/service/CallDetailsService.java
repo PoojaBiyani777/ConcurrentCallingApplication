@@ -36,7 +36,7 @@ public class CallDetailsService
     {
         callDetailsRepository.save(callDetails);
     }
-/*
+
     public void updateStatus(Long id, String statusChanged)
     {
         Optional<CallDetailsModel> callDetailsModelOptional = callDetailsRepository.findById(id);
@@ -61,9 +61,8 @@ public class CallDetailsService
           //  logger.info("No Call Details with the given id ");
         }
     }
-    */
 
-    public void updateStatusAndNotes(Long id,String statusChanged, String notesChanged)
+    public void updateNotes(Long id, String notesChanged)
     {
         Optional<CallDetailsModel> callDetailsModelOptional = callDetailsRepository.findById(id);
         CallDetailsModel callDetails = callDetailsModelOptional.get();
@@ -80,7 +79,7 @@ public class CallDetailsService
             LocalDateTime createdDate = callDetails.getCreatedDate();
 
                 callDetails.setNotes(notesChanged);
-                callDetails.setStatus(statusChanged);
+              //  callDetails.setStatus(statusChanged);
             callDetailsRepository.save(callDetails);
         }
         else
