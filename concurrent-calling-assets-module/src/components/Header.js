@@ -6,10 +6,12 @@ import IconButton from '@material-ui/core/IconButton';
 import '../css/Header.css';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
-import Axios from 'axios';
+import { Link, NavLink } from 'react-router-dom';
+
 let userName = "";
 let displayPicture = "";
 let userId = "";
+let homePage = "";
 const styles = theme =>
 ({
   profileName:
@@ -26,12 +28,15 @@ export class Header extends Component
 {
   state = {
     "userName": "",
-    "displayPicture": ""
+    "displayPicture": "",
   }
 
   constructor(props)
   {
     super(props);
+    this.state = {
+      "iconClicked": false,
+    }
   }
 
   componentDidMount = () =>
@@ -50,16 +55,31 @@ export class Header extends Component
     })
   }
 
+  goToHomePage = () =>
+  {
+      this.setState({iconClicked: true}, () => console.log(this.state.iconClicked,'go back'));
+      console.log("Logo Clicked : "+this.state.iconClicked);
+  }
+
   render() 
   {
     const {classes} = this.props;
+    if(this.state.iconClicked)
+    {
+     // console.log("Click home!");
+      homePage = this.history.go(-1);
+     console.log(this.homePage);
+    }
     return (
       <div>
       <AppBar position="static" className="app-bar" style={{ backgroundColor: "black"}}>
         <Toolbar variant="dense">
           <IconButton color="inherit" aria-label="Menu">
-            <img src = { require('./../static/zemoso_logo.svg')} />
+          <Link to = {'/' }>
+                <img src = { require('./../static/zemoso_logo.svg')}/>
+          </Link>
           </IconButton>
+          {homePage}
           <Typography variant="headline" color="inherit">
             ZeMultiCalls
           </Typography>

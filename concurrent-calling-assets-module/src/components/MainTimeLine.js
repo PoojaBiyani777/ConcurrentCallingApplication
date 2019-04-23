@@ -9,6 +9,7 @@ import Popup from "reactjs-popup";
 let id = "";
 let notesChanged = "";
 let phoneNumber = "";
+let phoneNumberClicked = "";
 let success = false;
 let notesSave = "";
 
@@ -28,6 +29,15 @@ export class MainTimeLine extends Component
   }
   state = {
     notesChanged: ""
+  }
+
+  handleEndIcon = () =>
+  {
+    console.log("In MainTimeline Handle End Call")
+    let index = Number(localStorage.getItem("index"));
+    index = index + 1;
+    localStorage.setItem("index",index);
+    console.log("Updated index : "+index);
   }
 
   handleEndCall = () =>
@@ -72,7 +82,7 @@ export class MainTimeLine extends Component
       
     
   }
-
+/*
   componentDidMount = () =>
   {
     console.log("global notesChanged : "+notesChanged);
@@ -83,12 +93,14 @@ export class MainTimeLine extends Component
       statusChanged
     }
   }
+  */
 
   render() 
   {
     const { classes } = this.props;
     phoneNumber = this.props.match.params.phone_number;
     id = this.props.match.params.id;
+    phoneNumberClicked = this.props.match.params.phoneNumberClicked;
     notesChanged = this.props.notes;
     if(success === true)
     {
@@ -106,7 +118,8 @@ export class MainTimeLine extends Component
         <CallingBar 
           phoneNumber = { phoneNumber } 
           id = { id }
-          handleEndCall = { this.handleEndCall }  
+          handleEndIcon = { this.handleEndIcon } 
+          phoneNumberClicked = { phoneNumberClicked }
         />
         <div>
           <Notes 
@@ -114,6 +127,8 @@ export class MainTimeLine extends Component
             id = { id }
             saveStatusAndNotes = { this.saveStatusAndNotes }
             handleEndCall = { this.handleEndCall }  
+            phoneNumberClicked = { phoneNumberClicked }
+
           />
 
         </div>
@@ -121,6 +136,7 @@ export class MainTimeLine extends Component
           <TimeLine 
             phoneNumber = { phoneNumber } 
             id = { id }
+            phoneNumberClicked = { phoneNumberClicked }
           />
         </div>
         { notesSave }

@@ -17,7 +17,7 @@ class App extends Component
           <Header/>
           <Switch>
             <Route exact path = "/" component = { DisplayCallDetails } />
-            <Route exact path = '/timeline/:id/:phone_number'  component = { MainTimeLine } />
+            <Route exact path = '/timeline/:id/:phone_number/:phoneNumberClicked'  component = { MainTimeLine } />
           </Switch>
         </div>
       </BrowserRouter>

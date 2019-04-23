@@ -27,10 +27,10 @@ const styles = theme =>
 
     textField : 
     {
-        marginLeft: "286px",
+        marginLeft: "282px",
         paddingTop: "15px",
         paddingLeft: "10px",
-        width: "901px",
+        width: "890px",
         height: "100%",
         float: "left",
         border: "2px solid gray",
@@ -160,7 +160,7 @@ export class Notes extends Component
                 >
                 </TextField>
                 <input type = "submit" id = "submit" name = "Save" value = "Save"/>
-                <button type = "submit" id = "submit" name = "Submit" value = "Submit" onClick = { this.handleEndCall }>Submit</button>
+                <button type = "submit" id = "submit" name = "Submit" value = "Submit" onClick = { this.handleEndCall }>Close</button>
             </form>
             </div>
 

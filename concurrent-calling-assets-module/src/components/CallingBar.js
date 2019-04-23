@@ -8,6 +8,9 @@ let connectedPhoneNumber = "";
 let connectedId = "";
 let connectedStatus = "";
 let nowTime = null;
+let callDuration = "00:00";
+let callTimer = null;
+let displayDuration = "";
 
 const styles = theme => 
 ({
@@ -31,12 +34,12 @@ const styles = theme =>
 
   hangUpIcon:
   {
-    marginLeft: "350px",
+    marginLeft: "300px",
   },
 
   recording:
   {
-    marginLeft: "400px",
+    marginLeft: "450px",
   },
 
   mute: 
@@ -91,18 +94,12 @@ export class CallingBar extends Component {
       phoneNumber,
       status
     }
-    /*
-    axios.put('http://localhost:8080/call-details/'+id,data)
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error =>{
-        console.log(error);
-      })
-      
-      */
     console.log("Calling Bar Handle End Call");
-    this.props.handleEndCall();
+    if(this.props.phoneNumberClicked === "false")
+    {
+        this.endTimer();
+    }
+    this.props.handleEndIcon();
       
   }
 
@@ -130,8 +127,12 @@ export class CallingBar extends Component {
     const phoneNumber =  connectedPhoneNumber
     const status = connectedStatus
     console.log("Connected Id : "+id+" Connected phoneNumber : "+phoneNumber+" Connected Status : "+status);
-    
-    const data = {
+    console.log("Is Phone Numeber Clicked ? - "+this.props.phoneNumberClicked);
+    if(this.props.phoneNumberClicked === "false")
+    {
+      this.startTimer();
+    }
+      const data = {
       id,
       phoneNumber,
       status
@@ -162,6 +163,38 @@ export class CallingBar extends Component {
     console.log("Now Time : "+nowTime);
     
   }
+
+  startTimer = () =>
+  {
+    console.log("Calling Bar Timer started");
+    var time = 0;
+    callTimer = setInterval(() => {
+      //let time = 0;
+    time += 1;
+    var hours = Math.trunc(time/3600) > 0 ? Math.trunc(time/3600)+':' : '';
+    var minutes = Math.trunc(time/60) > 0 ? Math.trunc(time/60) : '0';
+    var seconds = time % 60;
+    seconds = seconds >= 10 ? seconds : '0' + seconds;
+    callDuration = '' + hours + minutes + ':' + seconds;
+   // console.log("Calling Bar Call Duration: "+callDuration);
+  //  this.props.callDuration(callDuration); 
+ //   this.showDuration(callDuration);
+ //   this.setState({ stateDuration: callDuration});
+ //   console.log("State Duration : " +this.state.stateDuration);
+    },1000);
+
+    console.log("After set interval : "+callDuration);
+
+   }
+
+  // Stop the timer
+  endTimer = () =>
+  {
+      clearInterval(callTimer);
+     // this.props.callDuration(callDuration);
+      console.log('Calling Bar Timer Ended! Duration : '+callDuration);
+  }
+
   
   render() 
   {
@@ -169,12 +202,21 @@ export class CallingBar extends Component {
     connectedPhoneNumber = this.props.phoneNumber;
     connectedId = this.props.id;
     connectedStatus = "Call Rejected";
+/*
+    if(this.props.phoneNumberClicked === "false")
+    {
+      displayDuration = (<div className = { classes.time }> { callDuration } </div>)
+    }
+    */
+  //  callDuration = this.props.callDuration;
+
     return (
       <div>  
         <Toolbar className = { classes.toolBar }>
             <div className = { classes.phoneNumber }>
               <div>Connected to: { connectedPhoneNumber }</div>
-              <div className = { classes.time }> {new Date().toLocaleTimeString()} </div>
+              <div className = { classes.time }> { callDuration } </div>
+              { displayDuration }
             </div>  
             <div className = { classes.hangUpIcon }>
               <img 

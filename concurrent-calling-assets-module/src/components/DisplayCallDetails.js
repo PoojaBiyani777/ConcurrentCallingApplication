@@ -11,9 +11,13 @@ import TableRow from '@material-ui/core/TableRow';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 import TaskBar from './TaskBar';
+import { MainTimeLine } from './MainTimeLine';
+import { CallingBar } from './CallingBar';
 
 let callNumbers = "123456789";
 let callIds = "";
+let callCallingBarC = "";
+let phoneNumberClicked = false;
 
 const styles = theme =>
 ({
@@ -32,7 +36,6 @@ const styles = theme =>
     height: "50px",
     color: "white",
     display: "block",
-    
   },
 
   table:
@@ -40,6 +43,9 @@ const styles = theme =>
     backgroundColor: "white",
   },
 })
+let callDuration = "00:00";
+let callCallingBar = true;
+
 
 export class DisplayCallDetails extends Component 
 {
@@ -51,6 +57,7 @@ export class DisplayCallDetails extends Component
       value: "",
       startQueueIsClicked: false,
       id: "",
+      callDuration: "00:00",
         callDetails: 
         [
           { 
@@ -82,6 +89,7 @@ export class DisplayCallDetails extends Component
         callIdsList: [],
         index: -1,
         length: -1,
+        callDuration: "0:00",
         newCallDetails:
         [
           {
@@ -105,6 +113,8 @@ export class DisplayCallDetails extends Component
       callDetails : res.data.slice(0,10)
     })
     })
+
+    console.log("DDDDD state: "+this.state.callDetails);
   }
 
   display = (display) =>
@@ -227,6 +237,13 @@ export class DisplayCallDetails extends Component
     this.setState({ callDetails: newCallDetails });
   };
 
+  updateCallDuration = (callDuration) =>
+  {
+      console.log("callDuration in DP : "+callDuration);
+      this.callDuration = callDuration;
+
+  }
+
    
   render() 
   {        
@@ -240,7 +257,8 @@ export class DisplayCallDetails extends Component
           callDetail = { callDetail } 
           deleteCallDetail = { this.deleteCallDetail }
           display = { this.display }
-          key =  {callDetail.phoneNumber}/>       
+          key =  {callDetail.id}   
+          phoneNumberClicked = {phoneNumberClicked}/>
       )
     })
     let callsList = "";
@@ -260,6 +278,10 @@ export class DisplayCallDetails extends Component
     }
     //console.log("index" + index + " " + length+"call Numbers LIsttt : "+callNumbersList);
     
+      console.log("Please call Calling Bar");
+      callCallingBarC = (<CallingBar callDuration = { this.state.callDuration } />);
+    
+
     if(index < length)
     {
       phoneNumber1 = callNumbersList[index];
@@ -277,6 +299,7 @@ export class DisplayCallDetails extends Component
                     handleCall = { this.handleCall }
                     callConnected = { this.handleCallConnected }
                     onStatusChange={(...args) => this.updateCallDetails(...args)}
+                    callDuration = {(...args) => this.updateCallDuration(...args)}
                   />
       );
       console.log("call /list /: "+callsList);
@@ -287,7 +310,8 @@ export class DisplayCallDetails extends Component
     }
     if (this.state.callConnected) 
     {
-      this.props.history.push('/timeline/'+callId1+'/+91'+phoneNumber1);
+      let clicked = false;
+      this.props.history.push('/timeline/'+callId1+'/+91'+phoneNumber1+'/false');
     }
     return (
       <div>

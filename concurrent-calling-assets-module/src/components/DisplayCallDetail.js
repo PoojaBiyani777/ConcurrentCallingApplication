@@ -9,6 +9,8 @@ import axios from  'axios';
 
 let SIPml = window.SIPml;
 let phoneNumber1 = "+919100679394";
+let phoneNumberClicked = false;
+
 export class DisplayCallDetail extends Component
 {
   state = {
@@ -170,6 +172,14 @@ export class DisplayCallDetail extends Component
       })
   }
 
+  onPhoneNumberClick = (e) =>
+  {
+   // event.preventDefault();
+    phoneNumberClicked = true;
+    console.log("You clicked the PhoneNumber in Display Details : "+phoneNumberClicked);
+    this.props.phoneNumberClicked = true;
+  }
+
   
   render() 
   {
@@ -181,7 +191,7 @@ export class DisplayCallDetail extends Component
           { callDetail.contactName } 
         </TableCell>
         <TableCell>            
-          <Link to = {'/timeline/'+ callDetail.id + '/' + callDetail.phoneNumber } className="back">
+          <Link to = {'/timeline/'+ callDetail.id + '/' + callDetail.phoneNumber +'/'+ 'true' } className="back" onClick = { this.onPhoneNumberClick }>
             { callDetail.phoneNumber }
           </Link>
         </TableCell>

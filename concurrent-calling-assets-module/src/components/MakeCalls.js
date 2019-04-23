@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { CallingBar } from './CallingBar';
+import ShowDuration from './ShowDuration';
 
 const SIPml = window.SIPml;
 let phoneNumber1 = "+919177245806";
@@ -10,16 +12,23 @@ let status2 = "";
 let callConnected = false;
 let connectedTime = "";
 let terminatedTime = "";
+let callDuration = "00:00";
+let callTimer = null;
 let duration = "";
+let displayDuration = false;
+let showDuration = "";
 
 export class MakeCalls extends Component 
 {
-
+  
 constructor(props)
 {
   super(props);
   this.state = {
-
+    callTimer: null,
+    callDuration: "0:00",
+    random: 'abc',
+    stateDuration: "0:00",
   }
 };
 
@@ -30,8 +39,16 @@ constructor(props)
 
   endCall = () =>
   {
-    let status1 = status;
-    status = "";
+    if(this.callSession)
+    {
+      this.callSession.hangup({ events_listener: { events: '*', listener: this.sessionEventsListener} });
+    }
+    this.isEnded = false;
+    this.callbarColor = '#C5D0DE';
+    this.endTimer();
+    if(this.callConnected == false) {
+      this.callConnectionStatus = 'missed';
+    }
   }
 
   updateStatus = (status) =>
@@ -54,6 +71,11 @@ constructor(props)
     
   callEventsListener = (e) => 
   {
+    console.log("abc",this);
+    this.setState({
+      random: '1111'
+    })
+    let that = this;
     console.log("777getSipResponseCode : " + e.getSipResponseCode());
     console.info(
     ">>>>> Call session event = " +
@@ -81,10 +103,19 @@ constructor(props)
 
       // this.updateStatus(status);
       this.callConnected = true;
+      this.displayDuration = true;
       callConnected = true;
       this.props.callConnected();
       this.props.onStatusChange(this.props.phoneNumber1,status);
-      //      this.startTimer();
+      this.test();
+      console.log("xyz123",that)
+      that.setState({
+        random: 'adasd'
+      },() => {
+        console.log("hellllllllo")
+      })
+      console.log("xyz",that)
+      this.startTimer();
       //EventBus.$emit("startTranscriptionEvent");
     }
     else if(e.getSipResponseCode() === 180)
@@ -121,6 +152,8 @@ constructor(props)
     {
       status = "Busy Everywhere";
       this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.updateStatus(status);
+      this.endCall();
     }
     
     else if (e.type === "terminated") 
@@ -131,6 +164,7 @@ constructor(props)
         console.log("Terminated Time : "+terminatedTime);
         this.updateStatus(status);
         this.endCall();
+        this.endTimer();
       console.log("terminated123 "+status);
     }
    
@@ -156,9 +190,18 @@ constructor(props)
 
     console.log("Status1234567 : "+status);
     console.log("7779getSipResponseCode : "+e.getSipResponseCode());
-
   }
     
+  test = () => {
+    console.log('1111',this.state.random);
+    this.setState({
+      random: 'ppppp'
+    },() => {
+
+    console.log('1112222',this.state.random);
+    })
+  }
+  
   makeCall = () => 
   {
     console.log("in make call function");
@@ -198,7 +241,7 @@ constructor(props)
   login = () =>
   {
     this.registerSession = this.sipStack.newSession("register", {
-    events_listener: { events: "*", listener: this.sessionEventsListener } // optional: '*' means all events
+    events_listener: { events: "*", listener: this.sessionEventsListener.bind(this) } // optional: '*' means all events
     });
     console.log("in login funcion... calling registerSession.register()");
     this.registerSession.register();
@@ -268,23 +311,6 @@ constructor(props)
       this.createSipStack();
     }
     this.sipStack.start();
-
-
-
-
-    //phoneNumber1=phoneNumber1.slice(3, phoneNumber1.length);
-   /* if( this.props.index == 0 )
-    {
-      console.log("Entered if block ");
-      SIPml.init(this.readyCallback, this.errorCallback);
-      this.sipStack.start();
-    }
-    else
-    {
-      console.log("Entered Else block ");
-      this.makeCall();
-    }
-    */
   }
       
   call = () =>
@@ -294,16 +320,71 @@ constructor(props)
     this.makeSIPCall();
     console.log("Call Made ");
   }
- 
+
+  startTimer = () =>
+  {
+    console.log("Timer started");
+    var time = 0;
+    callTimer = setInterval(() => {
+      //let time = 0;
+    time += 1;
+    var hours = Math.trunc(time/3600) > 0 ? Math.trunc(time/3600)+':' : '';
+    var minutes = Math.trunc(time/60) > 0 ? Math.trunc(time/60) : '0';
+    var seconds = time % 60;
+    seconds = seconds >= 10 ? seconds : '0' + seconds;
+    callDuration = '' + hours + minutes + ':' + seconds;
+    console.log("Call Duration: "+callDuration);
+    this.props.callDuration(callDuration); 
+  //  this.showDuration(callDuration);
+  //  this.setState({ stateDuration: callDuration});
+  //  console.log("State Duration : " +this.state.stateDuration);
+    },1000);
+
+    console.log("After set interval : "+callDuration);
+
+   }
+
+  // Stop the timer
+  endTimer = () =>
+  {
+      clearInterval(callTimer);
+      this.props.callDuration(callDuration);
+      console.log('Timer Ended! Duration : '+callDuration);
+      let dueDate = "Completed";
+      console.log("CT : "+connectedTime + " D : "+callDuration+ " dueDate : "+dueDate);
+      const data = {
+        "createdDate": connectedTime,
+        "duration": callDuration,
+        "dueDate": dueDate
+      }
+      axios.put('/call-details/update-connectedtime-duration-duedate/'+callId1,data)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
   render() 
   {
     console.log("In Make Calls \n CallNumbersList : "+this.props.callNumbersList);
     console.log("Index : "+this.props.index+" Value : "+this.props.value);
+    callId1 = this.props.callId1;
+    console.log("Make Calls : callId1 : "+callId1);
+    console.log()
+    if(this.displayDuration)
+    {
+      showDuration = (
+        <ShowDuration callDuration = { callDuration }/>
+      );
+    }
     return (
       <div>
       { () => this.props.display("hello123") }
-        { this.call() }
-      </div>
+        { this.call() } 
+        { this.showDuration }
+       </div>
     )
   }
 }
