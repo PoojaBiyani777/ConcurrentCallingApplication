@@ -23,13 +23,18 @@ const styles = theme =>
   phoneNumber:
   {
     color: "white",
+    fontSize: "13px",
+    fontFamily: "Roboto"
   },
 
   time:
   {
-    fontSize: "30px",
+    fontSize: "13px",
     float: "left",
-    paddingTop: "5px"
+    paddingTop: "5px",
+    color: "white",
+    paddingLeft: "440px",
+    fontFamily: "Roboto"
   },
 
   hangUpIcon:
@@ -214,10 +219,8 @@ export class CallingBar extends Component {
       <div>  
         <Toolbar className = { classes.toolBar }>
             <div className = { classes.phoneNumber }>
-              <div>Connected to: { connectedPhoneNumber }</div>
-              <div className = { classes.time }> { callDuration } </div>
-              { displayDuration }
-            </div>  
+              <div>Connected to { connectedPhoneNumber }</div>
+              </div>  
             <div className = { classes.hangUpIcon }>
               <img 
               src = { require('./../static/Icn_end call/icn_End Call.png')} 
@@ -225,24 +228,9 @@ export class CallingBar extends Component {
               />
             { this.updateStatus }
             </div>
-            <div className = { classes.recording }>
-              <img src = { require('./../static/icn_recording/icn_recording.png')} />
-              <div className = { classes.labels }>
-                Recording
-              </div>
+            <div className = { classes.time }> Duration  { callDuration } 
             </div>
-            <div className = { classes.mute }>
-              <img src = { require('./../static/icn_mute/icn_mute.png')} />
-              <div className = { classes.labels }>
-                Mute
-              </div>
-            </div>
-            <div className = { classes.keyPad }>
-              <img src = { require('./../static/icn_keypad/icn_keypad.png')} />
-              <div className = { classes.labels }>
-                KeyPad
-              </div>
-            </div>
+            
         </Toolbar>                          
       </div>
     )

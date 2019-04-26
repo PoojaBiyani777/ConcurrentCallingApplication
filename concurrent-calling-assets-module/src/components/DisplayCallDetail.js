@@ -185,7 +185,7 @@ export class DisplayCallDetail extends Component
   {
     const callDetail = this.props.callDetail;
     return (
-      <TableRow>
+      <TableRow style = {{fontFamily: "Roboto", fontSize: "17px" }}>
         <TableCell> 
           <Checkbox onClick = { () => this.checkboxChanged(callDetail.phoneNumber, callDetail.id) } /> 
           { callDetail.contactName } 

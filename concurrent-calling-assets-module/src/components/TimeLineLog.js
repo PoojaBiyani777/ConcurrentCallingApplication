@@ -5,11 +5,54 @@ const styles = theme =>
 ({
     timelineLog: 
     {
-        marginTop: "30px"
-    }
+        marginTop: "0px",
+        width: "70%",
+        marginBottom: "0px",
+        textAlign: "left",
+        paddingLeft: "50px",
+        paddingTop: "20px"
+    },
+    image: 
+    {
+      float: "left",
+      paddingTop: "0px",
+      marginLeft: "-65px",
+    },
+    lable:
+    {
+      height: "30px",
+      color: "#354052",
+      fontFamily: "Roboto",
+      fontSize: "13px",
+      fontWeight: "500",
+      lineHeight: "21px",
+      marginTop: "10px"
+    },
+    lineExtend:
+    {
+      width: "1px",
+      height: "95px",
+      borderLeft: "2px solid",
+      float: "left",
+      paddingTop: "0px",
+      marginLeft: "-55px",  
+      marginTop: "22px" ,
+    },
+    duration:
+    {
+        height: "16px",
+        color: "#59595f",
+        fontFamily: "Roboto",
+        fontSize: "13px",
+        lineHeight: "17px"
+    },
+    
+
 })
 
 let date = "";
+let log = " ";
+let year1970 = "false";
 export class TimeLineLog extends Component {
 
   getDates = (datetime) =>
@@ -31,19 +74,41 @@ export class TimeLineLog extends Component {
       hours + ':' + minutes + ' ' + ampm;
     let epochTime = full_date.getTime();
     date = [strTime] ;
-    return [strTime, epochTime];
+    console.log("Year : "+year);
+    if(year === "1970")
+    {
+      year1970 = "true";
+      console.log("Year 1970 : "+year1970);
+    }
+    //return [strTime, epochTime];
   }
 
   render() {
     const { classes } = this.props;
     const timelineLog = this.props.timelineLog;
     //let date = {timelineLog.createdDate};
+    if(timelineLog.createdDate === null)
+    {
+      console.log("YYYYear is 1970 ")
+      log = " ";
+    }
+    else
+    {
+      log = (
+        <div className = { classes.timelineLog }>
+      <img src = { require('./../static/icn_made call/Icon/made_call.png')} className = {classes.image}/>
+      <div className = { classes.lineExtend }></div>
+        <div className = { classes.lable }><b>You made a call to :</b> { timelineLog.contactName }</div>
+        <div className = { classes.duration } onClick = { this.getDates(timelineLog.createdDate) }>{date}  for  { timelineLog.duration }</div>
+        <div className = { classes.lable }><b>Notes : </b>{ timelineLog.notes }</div>
+        
+      </div>
+      )
+    }
+
     return (
-      <div className = { classes.timelineLog }>
-        <b>You made a call to : { timelineLog.contactName }</b>
-        <p onClick = { this.getDates(timelineLog.createdDate) }>{date}  for  { timelineLog.duration }</p>
-        <p><b>Notes : </b>{ timelineLog.notes }</p>
-        <hr/>
+      <div>
+        {log}
       </div>
     )
   }

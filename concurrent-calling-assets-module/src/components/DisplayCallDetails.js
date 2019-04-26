@@ -13,11 +13,13 @@ import { withStyles } from '@material-ui/core/styles';
 import TaskBar from './TaskBar';
 import { MainTimeLine } from './MainTimeLine';
 import { CallingBar } from './CallingBar';
+import AddCallDetails from './AddCallDetails';
 
 let callNumbers = "123456789";
 let callIds = "";
 let callCallingBarC = "";
 let phoneNumberClicked = false;
+let displayAddDetails = "";
 
 const styles = theme =>
 ({
@@ -36,6 +38,8 @@ const styles = theme =>
     height: "50px",
     color: "white",
     display: "block",
+    fontFamily: "Roboto",
+    fontSize: "13px"
   },
 
   table:
@@ -57,6 +61,7 @@ export class DisplayCallDetails extends Component
       value: "",
       startQueueIsClicked: false,
       id: "",
+      buttonClicked: false,
       callDuration: "00:00",
         callDetails: 
         [
@@ -222,26 +227,32 @@ export class DisplayCallDetails extends Component
     })
   }
 
-  updateCallDetails = (phoneNumber, callStatus) => {
+  updateCallDetails = (callId, phoneNumber, callStatus) => {
     const { callDetails } = this.state;
     const newCallDetails = Object.assign(callDetails);
 
     for (const i in newCallDetails) 
     {
-      const currentNum = newCallDetails[i].phoneNumber;
-      if (currentNum === phoneNumber) {
+      const currentId = newCallDetails[i].id;
+      if (currentId === callId) {
         newCallDetails[i].status = callStatus;
         break;
       }
     }
     this.setState({ callDetails: newCallDetails });
-  };
+  };  
 
   updateCallDuration = (callDuration) =>
   {
       console.log("callDuration in DP : "+callDuration);
       this.callDuration = callDuration;
 
+  }
+
+  onButtonClick = () =>
+  {
+    this.setState({buttonClicked: !this.state.buttonClicked });
+    console.log("Add Button Is Clicked!" + this.state.buttonClicked);
   }
 
    
@@ -313,35 +324,40 @@ export class DisplayCallDetails extends Component
       let clicked = false;
       this.props.history.push('/timeline/'+callId1+'/+91'+phoneNumber1+'/false');
     }
+
+    if(this.state.buttonClicked === false)
+    {
+      console.log("False!!!");
+      displayAddDetails = " ";
+    }
+    else
+    {
+      console.log("True!!!");
+      displayAddDetails = (<AddCallDetails/>);
+    }
     return (
       <div>
-        <Toolbar>
-          <h2>Tasks</h2>
-            <Button variant = "contained" size = "large" className = { classes.startCall }
+        <div style = {{ paddingRight: "20px", float: "right" }}>
+            <Button variant = "contained" size = "very large" className = { classes.startCall }
               onClick = { this.makeCalls }>
               Start Call
-            </Button>               
-        </Toolbar>
-        <div>
+            </Button>    
+        </div>           
           { callsList }
-        </div>
-        <div>
-          <div className = "tasks-list">
-            <TaskBar /> 
-          </div>
-          <div className="display-table" style = {{ marginRight: "100px", backgroundColor: "#E6E6E6" }}>
+        <div className="display-table" style = {{ marginRight: "100px", backgroundColor: "#E6E6E6", float: "left", width: "70%", paddingLeft: "50px" }}>
             <Table aria-labelledby="tableTitle" className = { classes.table } > 
               <TableBody>
-                <TableRow>
-                  <TableCell><h3>ContactName</h3></TableCell>
-                  <TableCell><h3>ContactNumber</h3></TableCell>
-                  <TableCell><h3>Status</h3></TableCell>
-                  <TableCell><h3>DueDate</h3></TableCell>
+                <TableRow style = {{ backgroundColor: "black"}}>
+                  <TableCell style = {{color:"white",fontFamily: "Roboto", fontSize: "13px" }}><h3>Whom You Want to Call to?</h3></TableCell>
+                  <TableCell style = {{color:"white",fontFamily: "Roboto", fontSize: "13px" }}><h3>ContactNumber</h3></TableCell>
+                  <TableCell style = {{color:"white", fontFamily: "Roboto", fontSize: "13px"}}><h3>Status</h3></TableCell>
+                  <TableCell style = {{color:"white", fontFamily: "Roboto", fontSize: "13px" }}><h3>DueDate</h3></TableCell>
                 </TableRow>
                 { callDetailsList }
               </TableBody>
             </Table>
-          </div>
+            <Button onClick = { this.onButtonClick } style = {{ backgroundColor: "black", color:"white", borderRadius:"100%", fontSize: "22px", float:"right", marginRight: "0px", marginTop: "-25px"}}>+</Button>
+            { displayAddDetails }
         </div>
       </div>
     )

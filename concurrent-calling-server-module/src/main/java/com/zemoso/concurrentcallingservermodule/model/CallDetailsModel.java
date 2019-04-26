@@ -12,14 +12,14 @@ public class CallDetailsModel
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @Column(nullable = false)
+    @Column
     private int checked;
 
-    @Column(nullable = false)
+    @Column
     private String contactName;
 
     @Column(nullable = false)
@@ -28,7 +28,7 @@ public class CallDetailsModel
     @Column
     private String status;
 
-    @Column(nullable = false)
+    @Column
     private String dueDate;
 
     @Column

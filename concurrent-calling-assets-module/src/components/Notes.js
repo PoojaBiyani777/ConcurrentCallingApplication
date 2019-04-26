@@ -18,7 +18,7 @@ const styles = theme =>
         paddingBottom: "5px",
         paddingTop: "10px",
         backgroundColor: "white",
-        width: "70%",
+        width: "50%",
         height: "100%",
         float: "right",
         border: "2px solid gray",
@@ -27,17 +27,29 @@ const styles = theme =>
 
     textField : 
     {
-        marginLeft: "282px",
-        paddingTop: "15px",
-        paddingLeft: "10px",
-        width: "890px",
+        marginRight: "120px",
+        marginTop: "40px",
+        paddingLeft: "20px",
+        width: "40%",
         height: "100%",
-        float: "left",
-        border: "2px solid gray",
-        backgroundColor: "white"
+        float: "right",
+      height: "100%",
+      borderLeft: "0.5px solid white",
+     // borderColor: "white"
+     shadow: "10px"
 
+      
+        
     },
-
+    lineExtend:
+    {
+      width: "0.5px",
+      height: "100%",
+      borderLeft: "0.5px solid",
+      float: "left",
+    },
+    
+    
     newNote :
     {
         marginLeft: "10px",
@@ -88,6 +100,15 @@ export class Notes extends Component
     this.setState({
         notes: event.target.value
     })
+    notes = this.state.notes;
+    console.log("Notes : "+notes);
+    const id = connectedId;
+    const phoneNumber = connectedPhoneNumber;
+    const data = {
+        notes
+    }
+    console.log("Notes submit handler!");
+    this.props.saveStatusAndNotes(notes);
   }
 
   onSubmitHandler = (event) =>
@@ -128,39 +149,22 @@ export class Notes extends Component
 
     return (
       <div> 
-        <div className = { classes.notesBackground }>
-            <div className = { classes.newNote }>
-                <img src = { require('./../static/icn_new_note/icn_new_note@2x.png') } />
-                New Note
-            </div>
-            <div className = { classes.email }>
-                <img src = { require('./../static/icn_mail/ic-mail@2x.png')} />
-                Email
-            </div>
-            <div className = { classes.call }>
-                <img src = { require('./../static/icn_call/ic-call@2x.png')} />
-                Call
-            </div>
-            <div className = { classes.voiceMail }>
-                <img src = { require('./../static/icn_voice mail/icn_voicemail.png')} />
-                VoiceMail
-            </div>
-            </div>
+
             <div className = { classes.textField }>
-            <form onSubmit = { this.onSubmitHandler }>
+            <form onSubmit = { this.onSubmitHandler } 
+>
                 <TextField
-                    rows = { 7 } 
+                    rows = { 12 } 
                     id = "notes"
-                    fullWidth = "true" 
+                    fullWidth = "false" 
                     multiline = "true" 
                     margin = "none" 
                     placeholder = "Take Notes On this Call....."
                     underline = "false"
                     onChange = { this.onChangeHandler }
+                    InputProps={{disableUnderline: true}}
                 >
                 </TextField>
-                <input type = "submit" id = "submit" name = "Save" value = "Save"/>
-                <button type = "submit" id = "submit" name = "Submit" value = "Submit" onClick = { this.handleEndCall }>Close</button>
             </form>
             </div>
 

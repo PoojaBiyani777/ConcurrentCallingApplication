@@ -89,7 +89,7 @@ constructor(props)
     {
       console.log("Connecting to the customer!");
       status = "Connecting";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
       this.callConnected = false;
       // this.updateStatus(status);
     }
@@ -106,7 +106,7 @@ constructor(props)
       this.displayDuration = true;
       callConnected = true;
       this.props.callConnected();
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
       this.test();
       console.log("xyz123",that)
       that.setState({
@@ -121,37 +121,37 @@ constructor(props)
     else if(e.getSipResponseCode() === 180)
     {
       status = "Ringing";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     else if(e.getSipResponseCode() === 181)
     {
       status = "Call Is Being Forwarded";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     else if(e.getSipResponseCode() === 202)
     {
       status = "Call Accepted";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     if(e.getSipResponseCode() === 486)
     {
       status = "Calle Is Busy";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     if(e.getSipResponseCode() === 487)
     {
       status = "Request Terminated";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     else if(e.getSipResponseCode() === 600)
     {
       status = "Busy Everywhere";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
     }
     else if(e.getSipResponseCode() === 603)
     {
       status = "Busy Everywhere";
-      this.props.onStatusChange(this.props.phoneNumber1,status);
+      this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
       this.updateStatus(status);
       this.endCall();
     }
@@ -162,6 +162,7 @@ constructor(props)
         status2 = "Call Terminated";
         terminatedTime = new Date().toLocaleString();
         console.log("Terminated Time : "+terminatedTime);
+        this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
         this.updateStatus(status);
         this.endCall();
         this.endTimer();
@@ -178,6 +179,7 @@ constructor(props)
       status2 = "Call Terminated";
     //  console.log("getSipResponseCode : "+e.getSipResponseCode());
     //  console.log("getSipResponseCode : "+status);
+    this.props.onStatusChange(this.props.callId1,this.props.phoneNumber1,status);
       this.updateStatus(status);
       this.endCall();
     }

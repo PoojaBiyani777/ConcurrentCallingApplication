@@ -9,15 +9,11 @@ const styles = theme =>
 ({
     timeLineBackground :
     {
-        backgroundColor: "white",
-        paddingTop: "0px",
-        marginTop: "70px",
-        marginRight: "100px",
-        width: "70%",
+        marginLeft: "70px",
+        marginTop: "40px",
+        width: "43%",
         height: "100%",
-        float: "right",
-        border: "2px solid gray"
-    
+        float: "left",    
     }
 })
 
@@ -71,8 +67,10 @@ export class TimeLine extends Component
     })
     
     return (
+      <div>
       <div className = { classes.timeLineBackground }>
         { timelineLogsList }
+      </div>
       </div>
     )
   }

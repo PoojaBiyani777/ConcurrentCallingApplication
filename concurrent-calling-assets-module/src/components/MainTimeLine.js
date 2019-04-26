@@ -114,32 +114,41 @@ export class MainTimeLine extends Component
     }
   
     return (
-      <div className = { classes.mainTimeLineBackgroud }>
-        <CallingBar 
-          phoneNumber = { phoneNumber } 
-          id = { id }
-          handleEndIcon = { this.handleEndIcon } 
-          phoneNumberClicked = { phoneNumberClicked }
-        />
-        <div>
-          <Notes 
+      <div>
+        
+          <CallingBar 
             phoneNumber = { phoneNumber } 
             id = { id }
-            saveStatusAndNotes = { this.saveStatusAndNotes }
-            handleEndCall = { this.handleEndCall }  
+            handleEndIcon = { this.handleEndIcon } 
             phoneNumberClicked = { phoneNumberClicked }
-
           />
-
-        </div>
         <div>
-          <TimeLine 
-            phoneNumber = { phoneNumber } 
-            id = { id }
-            phoneNumberClicked = { phoneNumberClicked }
-          />
+          
         </div>
-        { notesSave }
+
+
+        
+        <div>
+          <div>
+             <Notes 
+              phoneNumber = { phoneNumber } 
+              id = { id }
+              saveStatusAndNotes = { this.saveStatusAndNotes }
+              handleEndCall = { this.handleEndCall }  
+              phoneNumberClicked = { phoneNumberClicked }
+            />
+            { notesSave }
+          </div>
+          
+          <div>
+            <TimeLine 
+              phoneNumber = { phoneNumber } 
+              id = { id }
+              phoneNumberClicked = { phoneNumberClicked }
+            />
+          </div>
+        </div>
+                  
       </div>
     )
   }

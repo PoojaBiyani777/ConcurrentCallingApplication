@@ -17,16 +17,16 @@ public class User
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String userName;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
     @Column
     private String lastName;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     private Blob displayPicture;
